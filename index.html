@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <link rel="preload" src="/prizm.dev/assets/css/fonts.css" type="text/css" as="stylesheet"/>
+        <link rel="preload" src="/prizm.dev/assets/css/ubuntu/Ubuntu-BI.ttf" type="font/sfnt" as="font"/>
+        <link rel="preload" src="/prizm.dev/assets/css/ubuntu/Ubuntu-RI.ttf" type="font/sfnt" as="font"/>
+        <link rel="preload" src="/prizm.dev/assets/css/ubuntu/Ubuntu-B.ttf" type="font/sfnt" as="font"/>
+        <link rel="preload" src="/prizm.dev/assets/css/ubuntu/Ubuntu-R.ttf" type="font/sfnt" as="font"/>
+
+        <link rel="icon" type="image/png" href="/prizm.dev/assets/image/favicon.png" />
+        <link rel="stylesheet" type="text/css" id="priz_fonts" href="/prizm.dev/assets/css/fonts.css" />
+
+        <style type="text/css">
+            body {
+                background-color: #122;
+                color: #ccc;
+            }
+
+            key {
+                font-family: "Ubuntu Mono", monospace;
+                padding: 1px 2px;
+                background-color: #233;
+                border: 2px solid #455;
+                border-radius: 4px;
+            }
+
+            summary {
+                width: min-content;
+            }
+
+            textarea, input {
+                background-color: #233;
+                border: 2px solid #0ff;
+                border-radius: 4px;
+                color: #fff;
+                font-family: "Ubuntu Mono", monospace;
+            } textarea {
+                width: calc(100% - 8px);
+                height: 128px;
+            } input {
+                width: 64px;
+                padding: 2px 4px;
+                margin-bottom: 16px;
+            }
+
+            table {
+                border-spacing: 0px;
+            }
+            tr td {
+                border-left: 1px solid #fff2;
+                border-right: 1px solid #fff2;
+            }
+            tr:not(:first-child):hover td {
+                background-color: #344;
+            } tr:nth-child(2n+1) td {
+                background-color: #233;
+            } td {
+                padding: 2px 4px;
+                margin: 2px;
+                text-align: center;
+                overflow: hidden;
+            }
+            td.t, td.f, td.b {
+                font-family: "Ubuntu Mono", monospace;
+            } td.t {
+                font-weight: bold;
+                color: #fff;
+            } td.f {
+                color: #888;
+            } td.b {
+                font-weight: bold;
+                color: #f00;
+                cursor: help;
+            }
+            #truths tr:first-child {
+                position: sticky;
+                top: 0px;
+                background-color: #122;
+            } tr:first-child td:first-child {
+                border-top-left-radius: 4px;
+            } tr:first-child td:last-child {
+                border-top-right-radius: 4px;
+            } tr:last-child td {
+                border-bottom: 2px solid #0000;
+            }
+            tr:first-child td {
+                background-color: #455;
+                color: #0ff;
+                font-weight: bold;
+                cursor: pointer;
+            } tr:first-child td {
+                border-top: 2px solid #0cc;
+            } td:first-child {
+                border-left: 2px solid #0cc !important;
+            } td:last-child {
+                border-right: 2px solid #0cc !important;
+            } td.end {
+                border-right: 1px solid #fff !important;
+            } td.end + td {
+                border-left-color: #fff;
+            } .hide {
+                display: none;
+            } td[abbr="1"] {
+                font-style: italic;
+                color: #fff !important;
+                background-color: #888 !important;
+            } td[abbr="0"] {
+                font-style: italic;
+                color: #888 !important;
+                background-color: #333 !important;
+            } table.error tr:first-child td {
+                background-color: #533 !important;
+                border-color: #c00 !important;
+            }
+        </style>
+    </head>
+    <body>
+        <textarea onkeydown="prevent(event)" onkeyup="do_shit()"></textarea><br>
+        <details>
+            <summary>Tokens</summary>
+            <table>
+                <tr>
+                    <td>Token</td>
+                    <td>Logic</td>
+                </tr>
+                <tr>
+                    <td><key>&</key></td>
+                    <td>AND</td>
+                </tr>
+                <tr>
+                    <td><key>|</key></td>
+                    <td>OR</td>
+                </tr>
+                <tr>
+                    <td><key>^</key></td>
+                    <td>XOR</td>
+                </tr>
+                <tr>
+                    <td><key>!</key></td>
+                    <td>NOT</td>
+                </tr>
+                <tr>
+                    <td><key>1</key></td>
+                    <td>TRUE</td>
+                </tr>
+                <tr>
+                    <td><key>0</key></td>
+                    <td>FALSE</td>
+                </tr>
+                <tr>
+                    <td><key>(</key> <key>)</key></td>
+                    <td>sub-logic</td>
+                </tr>
+                <tr>
+                    <td><key>&#x21b5;</key></td>
+                    <td>new logic</td>
+                </tr>
+            </table>
+            <ul style="list-style: '-  '; padding-left: 16px;">
+                <li>Clicking on the variable or function name in the table will allow you to set inputs</li>
+                <li>Very complex logic will be split across multiple pages, 512 items per page</li>
+                <li>Changing the logic will clear the input states</li>
+                <li>Changing pages will keep your input states, but complex logic may take a while to filter through</li>
+                <li>This utility crashing your browser or PC is not my fault, it works well enough for the basics ;]</li>
+                <li>If no items are listed, that means your filters literally do not produce a valid state. Usually this is caused by filtering the logic output too</li>
+                <li>Filtering the output state <b>will take a while</b>, especially on complex logic spanning multiple pages</li>
+            </ul>
+        </details>
+        <br>
+        <input min="-1" type="number" pattern="\d+" step="1" class="hide" onchange="valid_input(this)"></input>
+        <table id="truths"></table>
+        <script type="text/javascript">
+            /* ------ [ WARNING ] ------ *
+             * This code isn't  clean or *
+             * efficient,  but I made it *
+             * in about 2 hours,  so shh *
+             * ------------------------- */
+            var last_eq = "";
+            var last_page = "0";
+            function $(q, e = document) { return e.querySelector(q); }
+            function $$(q, e = document) { return e.querySelectorAll(q); }
+            function valid_input(elem) {
+                while(Number(elem.value) < 0)
+                    elem.value = Number(elem.value) + Number(elem.max)
+                while(Number(elem.value) >= Number(elem.max))
+                    elem.value = Number(elem.value) - Number(elem.max)
+                do_shit(true)
+                start_page = this.value;
+            }
+            function prevent(evt) {
+                if(!"ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 10 ^!&|() Backspace ArrowUp ArrowDown ArrowLeft ArrowRight Home End Enter Return Delete".includes(evt.key))
+                    return evt.preventDefault();
+            }
+            function do_shit(selecting = false) {
+                if(last_eq == $("textarea").value.trim() && $("input").value == last_page)
+                    return
+                $("textarea").value = $("textarea").value
+                                        .replace(/([a-zA-Z10] *)([01\(])/g, "$1 & $2")
+                                        .replace(/([01\)])( *[a-zA-Z10])/g, "$1 & $2")
+                                        .replace(/([a-zA-Z10] +)([a-zA-Z10])/, "$1& $2")
+                                        .replace(/(\) *)(\()/g, "$1 & $2");
+                last_eq = $("textarea").value.trim();
+                var vars = [];
+                for(var v of $("textarea").value.split(/[ \n10!^()|&]+/g))
+                    if(!vars.includes(v) && v)
+                        vars.push(v);
+                console.log(vars);
+
+
+                while($("#truths").rows.length)
+                    $("#truths").rows[0].remove();
+
+                row = $("#truths").insertRow();
+                var cell;
+                for(var v of vars) {
+                    cell = row.insertCell();
+                    cell.innerHTML = v;
+                    cell.onclick = (evt) => { start_page = $("input").value; filter_me(evt.currentTarget); }
+                }
+                cell.classList.add("end");
+                var n = -1;
+                for(var eq of last_eq.split(/\n/g)) {
+                    n += 1;
+                    cell = row.insertCell();
+                    cell.innerHTML = "fn" + n.toString(16).toUpperCase();
+                    cell.title = eq;
+                    cell.onclick = (evt) => filter_me(evt.currentTarget);
+                }
+
+                var c = vars.length;
+                var max = 1 << c;
+                var inp = $("input")
+                if(max > 512) {
+                    inp.classList.remove("hide");
+                    var na = Number($("input").value);
+                    inp.max = Math.floor(max / 512)
+                    if(isNaN(na))
+                        $("input").value = "0"
+                    else if(na > (max / 512))
+                        $("input").value = Math.floor(max / 512)
+                    else if(na < 0)
+                        $("input").value = "0"
+                } else {
+                    inp.classList.add("hide")
+                    inp.value = "0"
+                }
+                var dir = Number(inp.value) < Number(last_page) ? -1 : 1;
+                console.log("dir", dir)
+                var start = Math.floor(Number($("input").value)) * 512;
+                if(selecting) {
+                    var again = true;
+                    while(again) {
+                        again = false;
+                        var good = 0;
+                        for(var abbr in vars) {
+                            var val = abbrs[abbr];
+                            if(!val) {
+                                good += 1
+                                continue
+                            }
+                            var found = false;
+
+                            for(var num = start; num < start + 512; num += 1) {
+                                if(val == ((num & (1 << abbr)) ? "1" : "0")) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if(found)
+                                good += 1;
+                            else
+                                break
+                        }
+                        if(good != vars.length) {
+                            again = true;
+                            if(start > max) {
+                                start = 0;
+                                $("input").value = 0;
+                            } else if(start < 0) {
+                                start = max;
+                                $("input").value = Math.floor(max / 512);
+                            } else {
+                                start += 512 * dir;
+                                $("input").value = $("input").value - -dir;
+                            }
+                        }
+                    }
+                }
+                last_page = inp.value
+                var end = Math.min(start + 512, max);
+                for(var num = start; num < end; num += 1) {
+                    row = $("#truths").insertRow();
+                    for(var i = 0; i < c; i += 1) {
+                        cell = row.insertCell();
+                        eval(`var ${vars[i]}_ = ${(num & (1 << i)) ? 1 : 0}`);
+                        cell.innerHTML = (num & (1 << i)) ? 1 : 0;
+                        cell.classList.add((num & (1 << i)) ? "t" : "f")
+                    }
+                    cell.classList.add("end")
+                    var en = -1;
+                    for(var eq of last_eq.split(/\n/g)) {
+                        en += 1
+                        cell = row.insertCell();
+                        try {
+                            var ans = eval(eq.replace(/([a-zA-Z]+)/g, "$1_"))
+                            cell.innerHTML = ans ? 1 : 0;
+                            cell.classList.add(ans ? "t" : "f");
+                        } catch(err) {
+                            cell.innerHTML = "?";
+                            cell.classList.add("b");
+                            cell.title = "Syntax Error: Equation #" + en;
+                        }
+                    }
+                }
+                if(selecting) {
+                    var cells = $("#truths").rows[0].cells
+                    for(var abbr in abbrs)
+                        cells[abbr].abbr = abbrs[abbr];
+                    if(Number($("input").value) > Number($("input").max))
+                        $("input").value = 0;
+                    else if(Number($("input").value) < 0)
+                        $("input").value = $("input").max - 1
+                    console.log(start_page, $("input").value)
+                    window.setTimeout(filter_me, 10, null, start_page == $("input").value ? -2 : null)
+                    start_page = $("input").value;
+                }
+            }
+            var abbrs = [];
+            var filter_elem = null;
+            var start_page = 0;
+            function filter_me(elem = null, dir = null) {
+                if(elem) {
+                    start_page = $("input").value;
+                    filter_elem = elem;
+                    switch(elem.abbr) {
+                        case "":
+                            elem.abbr = 1;
+                            break;
+                        case "1":
+                            elem.abbr = 0;
+                            break;
+                        case "0":
+                            elem.abbr = "";
+                            break;
+                    }
+                } else {
+                    elem = filter_elem;
+                }
+                for(var r of $$("#truths tr.hide"))
+                    r.classList.remove("hide")
+                var cc = $$("#truths tr:first-child td")
+                for(var e of $$("#truths tr:not(:first-child):not(.hide) td")) {
+                    if(cc[e.cellIndex].abbr && e.innerHTML != cc[e.cellIndex].abbr)
+                        e.parentElement.classList.add("hide")
+                }
+                abbrs = [];
+                for(var c of cc) {
+                    abbrs.push(c.abbr);
+                    c.onclick = (evt) => { start_page = $("input").value; filter_me(evt.currentTarget); }
+                }
+                if($("#truths tr:not(:first-child):not(.hide)") || dir == -2)
+                    return
+                if(elem)
+                    dir = elem.abbr
+                if(Number($("input").value) > Number($("input").max))
+                    $("input").value = 0;
+                else if(Number($("input").value) < 0)
+                    $("input").value = $("input").max - 1
+                else if(dir == "0")
+                    $("input").stepDown();
+                else if(dir == "1")
+                    $("input").stepUp();
+                do_shit(true);
+            }
+            do_shit();
+        </script>
+    </body>
+</html>
