@@ -196,9 +196,9 @@
                 if(last_eq == $("textarea").value.trim() && $("input").value == last_page)
                     return
                 $("textarea").value = $("textarea").value
-                                        .replace(/([a-zA-Z10] *)([01\(])/g, "$1 & $2")
-                                        .replace(/([01\)])( *[a-zA-Z10])/g, "$1 & $2")
-                                        .replace(/([a-zA-Z10] +)([a-zA-Z10])/, "$1& $2")
+                                        .replace(/([a-zA-Z10] *)([!01\(])/g, "$1 & $2")
+                                        .replace(/([01\)])( *[!a-zA-Z10])/g, "$1 & $2")
+                                        .replace(/([a-zA-Z10] +)([!a-zA-Z10])/, "$1& $2")
                                         .replace(/(\) *)(\()/g, "$1 & $2");
                 last_eq = $("textarea").value.trim();
                 var vars = [];
