@@ -363,7 +363,7 @@
                     return
                 if(elem)
                     dir = elem.abbr
-                if(Number($("input").value) > Number($("input").max))
+                if(Number($("input").value) >= Number($("input").max))
                     $("input").value = 0;
                 else if(Number($("input").value) < 0)
                     $("input").value = $("input").max - 1
