@@ -186,7 +186,6 @@
                 while(Number(elem.value) >= Number(elem.max))
                     elem.value = Number(elem.value) - Number(elem.max)
                 do_shit(true)
-                start_page = this.value;
             }
             function prevent(evt) {
                 if(!"ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 10 ^!&|() Backspace ArrowUp ArrowDown ArrowLeft ArrowRight Home End Enter Return Delete".includes(evt.key))
@@ -322,7 +321,7 @@
                     else if(Number($("input").value) < 0)
                         $("input").value = $("input").max - 1
                     console.log(start_page, $("input").value)
-                    window.setTimeout(filter_me, 10, null, start_page == $("input").value ? -2 : null)
+                    window.setTimeout(filter_me, 10, null, start_page == $("input").value ? -2 : dir)
                     start_page = $("input").value;
                 }
             }
@@ -361,7 +360,7 @@
                 }
                 if($("#truths tr:not(:first-child):not(.hide)") || dir == -2)
                     return
-                if(elem)
+                if(!dir && elem)
                     dir = elem.abbr
                 if(Number($("input").value) >= Number($("input").max))
                     $("input").value = 0;
@@ -369,7 +368,7 @@
                     $("input").value = $("input").max - 1
                 else if(dir == "0")
                     $("input").stepDown();
-                else if(dir == "1")
+                else
                     $("input").stepUp();
                 do_shit(true);
             }
