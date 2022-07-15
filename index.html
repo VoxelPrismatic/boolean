@@ -215,7 +215,7 @@
                 for(var v of vars) {
                     cell = row.insertCell();
                     cell.innerHTML = v;
-                    cell.onclick = (evt) => { start_page = $("input").value; filter_me(evt.currentTarget); }
+                    cell.onclick = (evt) => { filter_me(evt.currentTarget); }
                 }
                 cell.classList.add("end");
                 var n = -1;
@@ -246,7 +246,7 @@
                 }
                 var dir = Number(inp.value) < Number(last_page) ? -1 : 1;
                 console.log("dir", dir)
-                var start = Math.floor(Number($("input").value)) * 512;
+                var start = Math.max(0, Math.floor(Number($("input").value))) * 512;
                 if(selecting) {
                     var again = true;
                     while(again) {
@@ -321,16 +321,15 @@
                     else if(Number($("input").value) < 0)
                         $("input").value = $("input").max - 1
                     console.log(start_page, $("input").value)
-                    window.setTimeout(filter_me, 10, null, start_page == $("input").value ? -2 : dir)
-                    start_page = $("input").value;
+                    window.setTimeout(filter_me, 10, null, pages.includes($("input").value) ? -2 : dir)
+                    pages.push($("input").value);
                 }
             }
             var abbrs = [];
             var filter_elem = null;
-            var start_page = 0;
+            var pages = [];
             function filter_me(elem = null, dir = null) {
                 if(elem) {
-                    start_page = $("input").value;
                     filter_elem = elem;
                     switch(elem.abbr) {
                         case "":
@@ -343,6 +342,7 @@
                             elem.abbr = "";
                             break;
                     }
+                    pages = [];
                 } else {
                     elem = filter_elem;
                 }
@@ -356,7 +356,7 @@
                 abbrs = [];
                 for(var c of cc) {
                     abbrs.push(c.abbr);
-                    c.onclick = (evt) => { start_page = $("input").value; filter_me(evt.currentTarget); }
+                    c.onclick = (evt) => { filter_me(evt.currentTarget); }
                 }
                 if($("#truths tr:not(:first-child):not(.hide)") || dir == -2)
                     return
