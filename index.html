@@ -15,6 +15,7 @@
             body {
                 background-color: #122;
                 color: #ccc;
+                font-family: "Ubuntu";
             }
 
             key {
@@ -221,7 +222,7 @@
                 for(var eq of last_eq.split(/\n/g)) {
                     n += 1;
                     cell = row.insertCell();
-                    cell.innerHTML = "fn" + n.toString(16).toUpperCase();
+                    cell.innerHTML = eq;
                     cell.title = eq;
                     cell.onclick = (evt) => filter_me(evt.currentTarget);
                 }
