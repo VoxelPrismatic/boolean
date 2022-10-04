@@ -254,15 +254,14 @@
                 do_shit(true)
             }
             function prevent(evt) {
-                if(!"ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 10 ^!&|() Backspace ArrowUp ArrowDown ArrowLeft ArrowRight Home End Enter Return Delete".includes(evt.key))
+                if(!"ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 10 ^!&|()>= Backspace ArrowUp ArrowDown ArrowLeft ArrowRight Home End Enter Return Delete".includes(evt.key))
                     return evt.preventDefault();
             }
             function do_shit(selecting = false) {
                 if(last_eq == $("textarea").value.trim() && $("input").value == last_page)
                     return
-                $("textarea").value = $("textarea").value.replace(/==/g, "=")
-                                                         .replace(/>=/g, ">")
-                                                         .replace(/</g, ">")
+                $("textarea").value = $("textarea").value.replace(/=+/g, "=")
+                                                         .replace(/=*>=*/g, ">")
                                                          .replace(/([a-zA-Z10] *)([!01\(])/g, "$1 & $2")
                                                          .replace(/([01\)])( *[!a-zA-Z10])/g, "$1 & $2")
                                                          .replace(/([a-zA-Z10] +)([!a-zA-Z10])/, "$1& $2")
