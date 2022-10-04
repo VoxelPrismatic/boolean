@@ -357,11 +357,12 @@
                 var end = Math.min(start + 512, max);
                 for(var num = start; num < end; num += 1) {
                     row = $("#truths").insertRow();
-                    for(var i = 0; i < c; i += 1) {
+                    for(var i = c - 1; i >= 0; i -= 1) {
                         cell = row.insertCell();
-                        eval(`var ${vars[i]}_ = ${(num & (1 << i)) ? 1 : 0}`);
-                        cell.innerHTML = (num & (1 << i)) ? 1 : 0;
-                        cell.classList.add((num & (1 << i)) ? "t" : "f")
+                        var var_val = num & (1 << i);
+                        eval(`var ${vars[i]}_ = ${var_val ? 1 : 0}`);
+                        cell.innerHTML = var_val ? 1 : 0;
+                        cell.classList.add(var_val ? "t" : "f")
                     }
                     cell.classList.add("end")
                     var en = -1;
