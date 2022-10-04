@@ -166,6 +166,13 @@
                             <td>FALSE</td>
                         </tr>
                         <tr>
+                            <td><key>&gt;</key></td>
+                            <td>THEN<sup>0</sup></td>
+                        </tr>
+                        <tr>
+                            <td><key>=</key></td>
+                            <td>IFF<sup>1</sup></td>
+                        <tr>
                             <td><key>(</key> <key>)</key></td>
                             <td>sub-logic</td>
                         </tr>
@@ -201,8 +208,20 @@
                             <td><key>F</key></td>
                             <td><key>0</key></td>
                         </tr>
+                        <tr>
+                            <td>p<key>&#x2192;</key>q</td>
+                            <td>p<key>&gt;</key>q</td>
+                        </tr>
+                        <tr>
+                            <td>p<key>&#x21d4;</key>q</td>
+                            <td>p<key>=</key>q</td>
+                        </tr>
                     </table>
                 </div>
+            </div>
+            <div>
+                <sup>0</sup> Syntax: <key>p > q</key>; If <key>p</key> then return <key>q</key>, else return <key>TRUE</key><br>
+                <sup>1</sup> Syntax: <key>p = q</key>; If <key>p</key> and <key>q</key> are the same value, return <key>TRUE</key>
             </div>
             <ul style="list-style: '-  '; padding-left: 16px;">
                 <li>Clicking on the variable or function name in the table will allow you to set inputs</li>
@@ -241,14 +260,16 @@
             function do_shit(selecting = false) {
                 if(last_eq == $("textarea").value.trim() && $("input").value == last_page)
                     return
-                $("textarea").value = $("textarea").value
-                                        .replace(/([a-zA-Z10] *)([!01\(])/g, "$1 & $2")
-                                        .replace(/([01\)])( *[!a-zA-Z10])/g, "$1 & $2")
-                                        .replace(/([a-zA-Z10] +)([!a-zA-Z10])/, "$1& $2")
-                                        .replace(/(\) *)(\()/g, "$1 & $2");
+                $("textarea").value = $("textarea").value.replace(/==/g, "=")
+                                                         .replace(/>=/g, ">")
+                                                         .replace(/</g, ">")
+                                                         .replace(/([a-zA-Z10] *)([!01\(])/g, "$1 & $2")
+                                                         .replace(/([01\)])( *[!a-zA-Z10])/g, "$1 & $2")
+                                                         .replace(/([a-zA-Z10] +)([!a-zA-Z10])/, "$1& $2")
+                                                         .replace(/(\) *)(\()/g, "$1 & $2");
                 last_eq = $("textarea").value.trim();
                 var vars = [];
-                for(var v of $("textarea").value.split(/[ \n10!^()|&]+/g))
+                for(var v of $("textarea").value.split(/[ \n10!^()|>=&]+/g))
                     if(!vars.includes(v) && v)
                         vars.push(v);
                 console.log(vars);
@@ -349,7 +370,7 @@
                         en += 1
                         cell = row.insertCell();
                         try {
-                            var ans = eval(eq.replace(/([a-zA-Z]+)/g, "$1_"))
+                            var ans = eval(eq.replace(/([a-zA-Z]+)/g, "$1_").replace(/=/g, "==").replace(/>/g, "<="));
                             cell.innerHTML = ans ? 1 : 0;
                             cell.classList.add(ans ? "t" : "f");
                         } catch(err) {
