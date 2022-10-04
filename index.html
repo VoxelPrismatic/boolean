@@ -119,44 +119,76 @@
         <textarea onkeydown="prevent(event)" onkeyup="do_shit()"></textarea><br>
         <details>
             <summary>Tokens</summary>
-            <table>
-                <tr>
-                    <td>Token</td>
-                    <td>Logic</td>
-                </tr>
-                <tr>
-                    <td><key>&</key></td>
-                    <td>AND</td>
-                </tr>
-                <tr>
-                    <td><key>|</key></td>
-                    <td>OR</td>
-                </tr>
-                <tr>
-                    <td><key>^</key></td>
-                    <td>XOR</td>
-                </tr>
-                <tr>
-                    <td><key>!</key></td>
-                    <td>NOT</td>
-                </tr>
-                <tr>
-                    <td><key>1</key></td>
-                    <td>TRUE</td>
-                </tr>
-                <tr>
-                    <td><key>0</key></td>
-                    <td>FALSE</td>
-                </tr>
-                <tr>
-                    <td><key>(</key> <key>)</key></td>
-                    <td>sub-logic</td>
-                </tr>
-                <tr>
-                    <td><key>&#x21b5;</key></td>
-                    <td>new logic</td>
-                </tr>
-            </table>
+            <div style="display:flex">
+                <div>
+                    <table>
+                        <tr>
+                            <td>Token</td>
+                            <td>Logic</td>
+                        </tr>
+                        <tr>
+                            <td><key>&</key></td>
+                            <td>AND</td>
+                        </tr>
+                        <tr>
+                            <td><key>|</key></td>
+                            <td>OR</td>
+                        </tr>
+                        <tr>
+                            <td><key>^</key></td>
+                            <td>XOR</td>
+                        </tr>
+                        <tr>
+                            <td><key>!</key></td>
+                            <td>NOT</td>
+                        </tr>
+                        <tr>
+                            <td><key>1</key></td>
+                            <td>TRUE</td>
+                        </tr>
+                        <tr>
+                            <td><key>0</key></td>
+                            <td>FALSE</td>
+                        </tr>
+                        <tr>
+                            <td><key>(</key> <key>)</key></td>
+                            <td>sub-logic</td>
+                        </tr>
+                        <tr>
+                            <td><key>&#x21b5;</key></td>
+                            <td>new logic</td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <table>
+                        <tr>
+                            <td>Maths symbol</td>
+                            <td>Use instead</td>
+                        </tr>
+                        <tr>
+                            <td><key>&Lambda;</key></td>
+                            <td>&</td>
+                        </tr>
+                        <tr>
+                            <td><key>V</key></td>
+                            <td>|</td>
+                        </tr>
+                        <tr>
+                            <td><key>~</key></td>
+                            <td>!</td>
+                        </tr>
+                        <tr>
+                            <td><key>T</key></td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><key>F</key></td>
+                            <td>0</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <ul style="list-style: '-  '; padding-left: 16px;">
                 <li>Clicking on the variable or function name in the table will allow you to set inputs</li>
                 <li>Very complex logic will be split across multiple pages, 512 items per page</li>
