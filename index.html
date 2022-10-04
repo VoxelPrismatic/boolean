@@ -141,37 +141,37 @@
                             <td>Token</td>
                             <td>Logic</td>
                         </tr>
-                        <tr>
+                        <tr title="p & q">
                             <td><key>&</key></td>
                             <td>AND</td>
                         </tr>
-                        <tr>
+                        <tr title = "p | q">
                             <td><key>|</key></td>
                             <td>OR</td>
                         </tr>
-                        <tr>
+                        <tr title="p ^ q">
                             <td><key>^</key></td>
                             <td>XOR</td>
                         </tr>
-                        <tr>
+                        <tr title="!p">
                             <td><key>!</key></td>
                             <td>NOT</td>
                         </tr>
-                        <tr>
+                        <tr title="1">
                             <td><key>1</key></td>
                             <td>TRUE</td>
                         </tr>
-                        <tr>
+                        <tr title="0">
                             <td><key>0</key></td>
                             <td>FALSE</td>
                         </tr>
-                        <tr>
+                        <tr title="p > q">
                             <td><key>&gt;</key></td>
-                            <td>THEN<sup>0</sup></td>
+                            <td>IMPLY</td>
                         </tr>
-                        <tr>
+                        <tr title="p = q">
                             <td><key>=</key></td>
-                            <td>IFF<sup>1</sup></td>
+                            <td>XNOR</td>
                         <tr>
                             <td><key>(</key> <key>)</key></td>
                             <td>sub-logic</td>
@@ -219,10 +219,6 @@
                     </table>
                 </div>
             </div>
-            <div>
-                <sup>0</sup> Syntax: <key>p > q</key>; If <key>p</key> then return <key>q</key>, else return <key>TRUE</key><br>
-                <sup>1</sup> Syntax: <key>p = q</key>; If <key>p</key> and <key>q</key> are the same value, return <key>TRUE</key>
-            </div>
             <ul style="list-style: '-  '; padding-left: 16px;">
                 <li>Clicking on the variable or function name in the table will allow you to set inputs</li>
                 <li>Very complex logic will be split across multiple pages, 512 items per page</li>
@@ -230,7 +226,7 @@
                 <li>Changing pages will keep your input states, but complex logic may take a while to filter through</li>
                 <li>This utility crashing your browser or PC is not my fault, it works well enough for the basics ;]</li>
                 <li>If no items are listed, that means your filters literally do not produce a valid state. Usually this is caused by filtering the logic output too</li>
-                <li>Filtering the output state <b>will take a while</b>, especially on complex logic spanning multiple pages</li>
+                <li>Filtering the output state <b><i>will take a while</i></b>, especially on complex logic spanning multiple pages</li>
             </ul>
         </details>
         <br>
@@ -357,17 +353,17 @@
                 var end = Math.min(start + 512, max);
                 for(var num = start; num < end; num += 1) {
                     row = $("#truths").insertRow();
-                    for(var i = c - 1; i >= 0; i -= 1) {
+                    var j = c;
+                    for(var i = 0; i < c; i++) {
+                        j--;
                         cell = row.insertCell();
-                        var var_val = num & (1 << i);
-                        eval(`var ${vars[i]}_ = ${var_val ? 1 : 0}`);
-                        cell.innerHTML = var_val ? 1 : 0;
-                        cell.classList.add(var_val ? "t" : "f")
+                        var var_val = (num & (1 << j)) ? 1 : 0;
+                        eval(`var ${vars[i]}_ = ${var_val}`);
+                        cell.innerHTML = var_val;
+                        cell.classList.add(var_val ? "t" : "f");
                     }
-                    cell.classList.add("end")
-                    var en = -1;
+                    cell.classList.add("end");
                     for(var eq of last_eq.split(/\n/g)) {
-                        en += 1
                         cell = row.insertCell();
                         try {
                             var ans = eval(eq.replace(/([a-zA-Z]+)/g, "$1_").replace(/=/g, "==").replace(/>/g, "<="));
@@ -376,7 +372,7 @@
                         } catch(err) {
                             cell.innerHTML = "?";
                             cell.classList.add("b");
-                            cell.title = "Syntax Error: Equation #" + en;
+                            cell.title = "Syntax Error";
                         }
                     }
                 }
